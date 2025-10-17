@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
+venv/
+
+# Virtualenv
+.venv/
+
+# IDE/editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# macOS
+.DS_Store
+
+# Model weights and data
+*.pt
+data/
+models/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+logs/
+*.log
+
+# Pip
+pip-delete-this-directory.txt
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Coverage
+.coverage
+htmlcov/
