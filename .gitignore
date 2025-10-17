@@ -22,8 +22,9 @@ venv/
 
 # Model weights and data
 *.pt
-data/
 models/
+# Allow all videos in data/videos
+!data/videos/*.mp4
 
 # Jupyter
 .ipynb_checkpoints/
