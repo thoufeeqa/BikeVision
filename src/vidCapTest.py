@@ -1,6 +1,11 @@
 import cv2
 from ultralytics import YOLO
 import numpy as np
+import os
+
+# Configure display for Raspberry Pi
+os.environ["DISPLAY"] = ":0"
+cv2.startWindowThread()
 
 # ---- CONFIG ----
 MODEL_PATH = "yolo11n.pt"   # or yolo11s.pt, yolo11m.pt, etc.
@@ -29,10 +34,11 @@ while True:
     for result in results:
         annotated = result.plot()
         
-        cv2.imshow("Bike Vision – YOLOv11 Feed", annotated)
-        cv2.setWindowProperty("Bike Vision – YOLOv11 Feed", cv2.WND_PROP_TOPMOST, 1)
+        # Display frame without macOS-specific properties
+        cv2.namedWindow("Bike Vision", cv2.WINDOW_NORMAL)
+        cv2.imshow("Bike Vision", annotated)
 
-    # macOS needs waitKey>0 to refresh windows
+    # Wait for key press (1ms)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
