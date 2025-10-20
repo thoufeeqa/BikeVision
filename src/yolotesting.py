@@ -1,5 +1,5 @@
 import cv2
-from ultralytics import YOLO
+from ultralytics import YOLO # type: ignore
 from ultralytics.utils.plotting import plot_results
 
 # ---- CONFIG ----
