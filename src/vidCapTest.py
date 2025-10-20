@@ -3,6 +3,7 @@ from ultralytics import YOLO
 import numpy as np
 import os
 import sys
+from picamera2 import Picamera2
 
 # Debug info
 print(f"Python version: {sys.version}")
@@ -25,18 +26,26 @@ CONFIDENCE = 0.4            # detection threshold
 CLASSES = ['person', 'car', 'bicycle', 'motorcycle', 'stop sign', 'traffic light']
 
 model = YOLO(MODEL_PATH)
-cap = cv2.VideoCapture(0)
+
+picam2 = Picamera2()
+picam2.preview_configuration.main.size = (1280, 720)
+picam2.preview_configuration.main.format = "RGB888"
+picam2.configure("preview")
+picam2.start()
+
+#cap = cv2.VideoCapture(0)
 
 
-if not cap.isOpened():
-    raise RuntimeError("Could not open webcam/source")
+
 
 print("[INFO] Press 'q' to quit")
 
 while True:
+    print("in loop")
 
-    ret, frame = cap.read()
-    if not ret:
+    frame = picam2.capture_array()
+    if frame is None:
+        print("Failed to capture frame")
         break
 
     results = model.track(frame, stream=True, conf=CONFIDENCE, tracker="bytetrack.yaml")
