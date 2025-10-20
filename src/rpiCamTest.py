@@ -1,4 +1,5 @@
 import cv2
+from picamera2 import Picamera2
 from ultralytics import YOLO
 import numpy as np
 import os
@@ -18,29 +19,18 @@ except Exception as e:
     print(f"OpenCV window creation test: FAILED - {str(e)}")
 
 
-cap = cv2.VideoCapture(0)
-
-
-if not cap.isOpened():
-    raise RuntimeError("Could not open webcam/source")
-
-print("[INFO] Press 'q' to quit")
+picam2 = Picamera2()
+picam2.preview_configuration.main.size = (1280, 720)
+picam2.preview_configuration.main.format = "RGB888"
+picam2.configure("preview")
+picam2.start()
 
 while True:
-    print("in loop")
-    
-    ret, frame = cap.read()
-    if not ret:
-        print("Failed to read frame")
-        break
-
-    cv2.namedWindow("Bike Vision", cv2.WINDOW_AUTOSIZE | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_NORMAL)
-    cv2.imshow("Bike Vision", frame)
-            
-
-    # Shorter wait time for RPi
+    frame = picam2.capture_array()
+    cv2.imshow("Pi Camera 3 Feed", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-cap.release()
 cv2.destroyAllWindows()
+
+
