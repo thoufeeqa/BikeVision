@@ -2,10 +2,20 @@ import cv2
 from ultralytics import YOLO
 import numpy as np
 import os
+import sys
 
-# Configure display for Raspberry Pi
-os.environ["DISPLAY"] = ":0"
-cv2.startWindowThread()
+# Debug info
+print(f"Python version: {sys.version}")
+print(f"OpenCV version: {cv2.__version__}")
+print(f"Display env: {os.environ.get('DISPLAY', 'Not set')}")
+
+# Try to create a test window first
+try:
+    cv2.namedWindow("Test")
+    cv2.destroyWindow("Test")
+    print("OpenCV window creation test: SUCCESS")
+except Exception as e:
+    print(f"OpenCV window creation test: FAILED - {str(e)}")
 
 # ---- CONFIG ----
 MODEL_PATH = "yolo11n.pt"   # or yolo11s.pt, yolo11m.pt, etc.
@@ -32,13 +42,18 @@ while True:
     results = model.track(frame, stream=True, conf=CONFIDENCE, tracker="bytetrack.yaml")
 
     for result in results:
-        annotated = result.plot()
-        
-        # Display frame without macOS-specific properties
-        cv2.namedWindow("Bike Vision", cv2.WINDOW_NORMAL)
-        cv2.imshow("Bike Vision", annotated)
+        try:
+            annotated = result.plot()
+            
+            # Create window with flags for RPi compatibility
+            cv2.namedWindow("Bike Vision", cv2.WINDOW_AUTOSIZE | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_NORMAL)
+            cv2.imshow("Bike Vision", annotated)
+            print("Frame displayed successfully", end="\r")
+        except Exception as e:
+            print(f"\nDisplay error: {str(e)}")
+            break
 
-    # Wait for key press (1ms)
+    # Shorter wait time for RPi
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
